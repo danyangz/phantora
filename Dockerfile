@@ -44,14 +44,13 @@ RUN --mount=type=cache,target=/var/cache/ccache \
 # may also take a while
 RUN FLASH_ATTN_CUDA_ARCHS="80;90" \
     MAX_JOBS=${MAX_JOBS:-$(( $(nproc) / 4 ))} \
-    python3 -m pip install --no-cache-dir --verbose --no-build-isolation flash-attn==2.8.3
+    python3 -m pip install --no-cache-dir --verbose --no-build-isolation flash-attn==2.7.3
 
 WORKDIR /phantora
 # torchtitan dependencies somehow need to be installed manually
-# NOTE: framework versions below were bumped for PyTorch 2.9.1 / CUDA 12.8 compatibility — verify during build.
-RUN curl -Lo torchtitan-requirements.txt https://raw.githubusercontent.com/pytorch/torchtitan/refs/tags/v0.3.0/.ci/docker/requirements.txt && \
+RUN curl -Lo torchtitan-requirements.txt https://raw.githubusercontent.com/pytorch/torchtitan/refs/tags/v0.1.0/.ci/docker/requirements.txt && \
     python3 -m pip install --no-cache-dir -r torchtitan-requirements.txt
-RUN python3 -m pip install --no-cache-dir megatron-core==0.16.0 transformers==4.52.0 deepspeed==0.18.0 torchtitan==0.3.0
+RUN python3 -m pip install --no-cache-dir megatron-core==0.13.1 transformers==4.41.2 deepspeed==0.17.5 torchtitan==0.1.0
 
 # DeepSpeed needs passwordless ssh
 COPY config/sshconfig /root/.ssh/config
