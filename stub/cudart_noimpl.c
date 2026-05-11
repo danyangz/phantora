@@ -1179,12 +1179,6 @@ cudaGetSurfaceObjectResourceDesc(struct cudaResourceDesc* pResDesc,
 }
 
 cudaError_t
-cudaRuntimeGetVersion(int* runtimeVersion)
-{
-    NOT_IMPLEMENTED;
-}
-
-cudaError_t
 cudaGraphCreate(cudaGraph_t* pGraph, unsigned int flags)
 {
     NOT_IMPLEMENTED;

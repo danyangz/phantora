@@ -381,7 +381,14 @@ cudaDeviceGetPCIBusId(char* pciBusId, int len, int device)
 cudaError_t
 cudaDriverGetVersion(int* driverVersion)
 {
-    *driverVersion = 11080;
+    *driverVersion = 12080;
+    return cudaSuccess;
+}
+
+cudaError_t
+cudaRuntimeGetVersion(int* runtimeVersion)
+{
+    *runtimeVersion = 12080;
     return cudaSuccess;
 }
 

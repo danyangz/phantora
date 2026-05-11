@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.8.0-devel-ubuntu22.04 AS phantora-pytorch
+FROM nvidia/cuda:12.8.0-devel-ubuntu22.04 AS phantora-pytorch
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive \
@@ -28,7 +28,7 @@ ENV CUDA_HOME=/usr/local/cuda
 ENV LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
 ENV TORCH_CUDA_ARCH_LIST="8.0;9.0"
 ENV TORCH_NVCC_FLAGS="-Xfatbin -compress-all"
-ENV PYTORCH_BUILD_VERSION=2.7.1
+ENV PYTORCH_BUILD_VERSION=2.9.1
 ENV PYTORCH_BUILD_NUMBER=1
 ENV USE_CUDNN=0
 ENV USE_CUSPARSELT=0
@@ -44,13 +44,14 @@ RUN --mount=type=cache,target=/var/cache/ccache \
 # may also take a while
 RUN FLASH_ATTN_CUDA_ARCHS="80;90" \
     MAX_JOBS=${MAX_JOBS:-$(( $(nproc) / 4 ))} \
-    python3 -m pip install --no-cache-dir --verbose --no-build-isolation flash-attn==2.7.3
+    python3 -m pip install --no-cache-dir --verbose --no-build-isolation flash-attn==2.8.3
 
 WORKDIR /phantora
 # torchtitan dependencies somehow need to be installed manually
-RUN curl -Lo torchtitan-requirements.txt https://raw.githubusercontent.com/pytorch/torchtitan/refs/tags/v0.1.0/.ci/docker/requirements.txt && \
+# NOTE: framework versions below were bumped for PyTorch 2.9.1 / CUDA 12.8 compatibility — verify during build.
+RUN curl -Lo torchtitan-requirements.txt https://raw.githubusercontent.com/pytorch/torchtitan/refs/tags/v0.3.0/.ci/docker/requirements.txt && \
     python3 -m pip install --no-cache-dir -r torchtitan-requirements.txt
-RUN python3 -m pip install --no-cache-dir megatron-core==0.13.1 transformers==4.41.2 deepspeed==0.17.5 torchtitan==0.1.0
+RUN python3 -m pip install --no-cache-dir megatron-core==0.16.0 transformers==4.52.0 deepspeed==0.18.0 torchtitan==0.3.0
 
 # DeepSpeed needs passwordless ssh
 COPY config/sshconfig /root/.ssh/config
